@@ -1,0 +1,52 @@
+Assignment 4
+------------
+1.  Give an algorithm to find a maximum spanning tree. Is this harder than finding a minimum spanning tree? Why or why not?
+
+This is no harder than finding a minimum spanning tree. We can use Kruskal's algorithm with a max-heap.
+
+FindMaxSpanningTree(Graph G)
+    Max Heap H = Heapify G.Edges
+    List MSTEdges = Create Empty List
+    While H Isn't Empty
+        Edge E = H.FindMax()
+        If Not E.Start.Visited Or Not E.End.Visited
+            E.Start.Visisted = True
+            E.End.Visited = True
+            Edges.Add(E)
+    Return MSTEdges
+End
+
+2.  A file contains only colons, spaces, newlines, commas, and digits in the following frequency:
+    colon   (100),
+    comma   (705),
+    space   (605),
+    newline (100),
+    0       (431),
+    1       (242),
+    2       (176),
+    3       (59),
+    4       (185),
+    5       (250),
+    6       (174),
+    7       (199),
+    8       (205),
+    9       (217).
+    Construct the Huffman code.
+    
+See "Huffman.png" for the corresponding tree.
+colon   : 00001
+comma   : 10
+space   : 001
+newline : 000001
+0       : 011
+1       : 0100
+2       : 00011
+3       : 000000
+4       : 1110
+5       : 0101
+6       : 00010
+7       : 1111
+8       : 1100
+9       : 1101
+
+3.  See Main.cpp.
