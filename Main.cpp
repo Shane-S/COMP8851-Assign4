@@ -2,7 +2,6 @@
 #include <cstring>
 #include <vector>
 #include <unordered_set>
-#include "MurmurHash2.h"
 
 typedef struct match {
     int p1;
@@ -13,20 +12,12 @@ typedef struct match {
     }
 } match;
 
-namespace std {
-    template<>
-    struct hash<match> {
-        size_t operator()(const match &m) const
-        {
-            size_t seed = 2166136261;
-            return MurmurHash64((void*)&m, sizeof(m), seed);
-        }
-    };
-}
-
 void PlaceMatch(std::vector<std::unordered_set<int>> &days, std::vector<std::vector<match>>& matches, match& m) {
     int day_num = 0;
     for (auto & day : days) {
+        // Each day has a corresponding set of players and list of matches
+        // The set contains which players have played that day (so that another day can be chosen if either player has already played)
+        // It's probably overkill, but whatever
         if (day.find(m.p1) == day.end() && day.find(m.p2) == day.end()) {
             day.insert(m.p1);
             day.insert(m.p2);
@@ -38,7 +29,7 @@ void PlaceMatch(std::vector<std::unordered_set<int>> &days, std::vector<std::vec
 }
 
 void RoundRobinWorker(std::vector<std::unordered_set<int>> &days, std::vector<std::vector<match>> &matches, int n, int first_player) {
-    // Base case; find a day we can insert this in
+    // Base case; make a match with these two players and insert it in the next available day
     if (n == 2) {
         match m = { first_player, first_player + 1 };
         PlaceMatch(days, matches, m);
@@ -60,10 +51,6 @@ void RoundRobinWorker(std::vector<std::unordered_set<int>> &days, std::vector<st
 // Precondition: k > 0
 std::vector<std::vector<match>> RoundRobin(int k) {
     int n = 1 << k;
-    int* players = new int[n];
-    for (int i = 0; i < n; i++) {
-        players[i] = i;
-    }
 
     std::vector<std::unordered_set<int>> days(n - 1);
     std::vector<std::vector<match>> matches(n - 1);
