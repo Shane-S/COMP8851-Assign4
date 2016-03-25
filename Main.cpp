@@ -1,7 +1,5 @@
 #include <iostream>
-#include <cstring>
 #include <vector>
-#include <unordered_set>
 
 typedef struct match {
     int p1;
@@ -12,15 +10,15 @@ typedef struct match {
     }
 } match;
 
-void PlaceMatch(std::vector<std::unordered_set<int>> &days, std::vector<std::vector<match>>& matches, match& m) {
+void PlaceMatch(std::vector<std::vector<bool>> &days, std::vector<std::vector<match>>& matches, match& m) {
     int day_num = 0;
     for (auto & day : days) {
         // Each day has a corresponding set of players and list of matches
         // The set contains which players have played that day (so that another day can be chosen if either player has already played)
         // It's probably overkill, but whatever
-        if (day.find(m.p1) == day.end() && day.find(m.p2) == day.end()) {
-            day.insert(m.p1);
-            day.insert(m.p2);
+        if (!day[m.p1] && !day[m.p2]) {
+            day[m.p1] = true;
+            day[m.p2] = true;
             matches[day_num].push_back(m);
             break;
         }
@@ -28,7 +26,7 @@ void PlaceMatch(std::vector<std::unordered_set<int>> &days, std::vector<std::vec
     }
 }
 
-void RoundRobinWorker(std::vector<std::unordered_set<int>> &days, std::vector<std::vector<match>> &matches, int n, int first_player) {
+void RoundRobinWorker(std::vector<std::vector<bool>> &days, std::vector<std::vector<match>> &matches, int n, int first_player) {
     // Base case; make a match with these two players and insert it in the next available day
     if (n == 2) {
         match m = { first_player, first_player + 1 };
@@ -52,7 +50,10 @@ void RoundRobinWorker(std::vector<std::unordered_set<int>> &days, std::vector<st
 std::vector<std::vector<match>> RoundRobin(int k) {
     int n = 1 << k;
 
-    std::vector<std::unordered_set<int>> days(n - 1);
+    std::vector<std::vector<bool>> days(n - 1);
+    for (auto & day : days) {
+        day.resize(n, false);
+    }
     std::vector<std::vector<match>> matches(n - 1);
     RoundRobinWorker(days, matches, n, 0);
     return matches;
