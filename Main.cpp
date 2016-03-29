@@ -12,10 +12,11 @@ typedef struct match {
 
 void PlaceMatch(std::vector<std::vector<bool>> &days, std::vector<std::vector<match>>& matches, match& m) {
     int day_num = 0;
+	// There's a constant time way to do day placement
+	// But I didn't do it
     for (auto & day : days) {
         // Each day has a corresponding set of players and list of matches
         // The set contains which players have played that day (so that another day can be chosen if either player has already played)
-        // It's probably overkill, but whatever
         if (!day[m.p1] && !day[m.p2]) {
             day[m.p1] = true;
             day[m.p2] = true;
@@ -60,7 +61,7 @@ std::vector<std::vector<match>> RoundRobin(int k) {
 }
 
 int main() {
-    int k = 3;
+    int k = 4;
     std::vector<std::vector<match>> schedule = RoundRobin(k);
     
     int day_num = 1;
